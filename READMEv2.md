@@ -10,7 +10,7 @@ This Flask API provides CRUD (Create, Read, Update, Delete) operations for manag
 -> Works with **Postman & curl**
 
 ---
-## Project Structure
+## Project Structure.
 ```
 flask-clients-api/
 │── app/

@@ -6,9 +6,12 @@ from app.db import get_db
 def client():
     app = create_app()
     app.config["TESTING"] = True
+
     with app.app_context():
         db = get_db()
-        db.clients.delete_many({})
+        if db:
+            db.clients.delete_many({}) 
+
     client = app.test_client()
     return client
 
@@ -19,4 +22,3 @@ def test_get_clients(client):
 def test_add_client(client):
     response = client.post("/clients", json={"name": "GK", "email": "GK@example.com"})
     assert response.status_code == 201
-

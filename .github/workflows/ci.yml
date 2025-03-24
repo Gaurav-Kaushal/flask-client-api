@@ -8,6 +8,15 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: flask_user
+          MONGO_INITDB_ROOT_PASSWORD: flaskpassword
+          MONGO_INITDB_DATABASE: clients_db
 
     steps:
       - name: Checkout repository
@@ -23,21 +32,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
-        run: PYTHONPATH=. pytest tests/
-        
-  docker-build:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build and push Docker image
+      - name: Wait for MongoDB to be ready
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest
+          sleep 10  # Give MongoDB time to start
+          mongo --host localhost --eval "db.stats()" || exit 1
+
+      - name: Run tests
+        env:
+          MONGO_URI: mongodb://flask_user:flaskpassword@localhost:27017/clients_db
+        run: |
+          PYTHONPATH=. pytest tests/

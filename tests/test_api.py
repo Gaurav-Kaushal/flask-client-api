@@ -9,8 +9,8 @@ def client():
 
     with app.app_context():
         db = get_db()
-        if db:
-            db.clients.delete_many({}) 
+        if db is not None: 
+            db.clients.delete_many({})  
 
     client = app.test_client()
     return client

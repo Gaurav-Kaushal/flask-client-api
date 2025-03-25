@@ -1,4 +1,4 @@
-name: Flask API CI
+name: Flask API CI/CD
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
 
       - name: Wait for MongoDB to be ready
         run: |
-          sleep 10  # Wait for MongoDB to start
+          sleep 10
           docker exec $(docker ps -q -f ancestor=mongo:5.0) mongosh --username flask_user --password flaskpassword --authenticationDatabase admin --eval "db.stats()" || exit 1
 
       - name: Run tests
@@ -58,3 +58,34 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest
+
+  deploy:
+    needs: docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: latest
+
+      - name: Authenticate with EKS
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+
+      - name: Deploy only modified manifests
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == k8s/* ]]; then
+              echo "Applying $file"
+              kubectl apply -f $file
+            fi
+          done

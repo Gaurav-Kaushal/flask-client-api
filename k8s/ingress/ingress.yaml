@@ -6,13 +6,13 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx 
   tls:
     - hosts:
-        - clients.api.deltacapita.com
+        - gkeks.duckdns.org
       secretName: flask-api-tls
   rules:
-    - host: clients.api.deltacapita.com
+    - host: gkeks.duckdns.org
       http:
         paths:
           - path: /

@@ -6,7 +6,9 @@ from app import create_app
 #app = Flask(__name__)
 app = create_app()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+#MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/") #for local testing
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://flask-user:flaskpassword@mongodb-service:27017/clients_db?authSource=admin")
+
 client = MongoClient(MONGO_URI)
 db = client.clients_db
 collection = db.clients

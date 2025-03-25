@@ -1,9 +1,9 @@
----
+ 
 apiVersion: v1
 kind: Namespace
 metadata:
   name: cert-manager
----
+ 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -34,13 +34,13 @@ spec:
           image: bitnami/cert-manager-cainjector:1.17.1
         - name: webhook
           image: bitnami/cert-manager-webhook:1.17.1
----
+ 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: cert-manager
   namespace: cert-manager
----
+ 
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

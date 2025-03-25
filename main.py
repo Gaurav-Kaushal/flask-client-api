@@ -45,6 +45,11 @@ def delete_client(email):
         return jsonify({"error": "Client not found"}), 404
     return jsonify({"message": "Client deleted successfully"})
 
+@app.route("/health")
+def health():
+    return jsonify({"status": "ok"}), 200
+
+
 app = create_app()
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

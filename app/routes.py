@@ -59,3 +59,8 @@ def delete_client(email):
     if deleted.deleted_count == 0:
         return jsonify({"error": "Client not found"}), 404
     return jsonify({"message": "Client deleted successfully"})
+
+@api_bp.route("/status", methods=["GET"])
+def status():
+    return jsonify({"message": "API is fully operational!"}), 200
+

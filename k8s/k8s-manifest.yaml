@@ -107,6 +107,7 @@ metadata:
     kubernetes.io/ingress.class: "nginx"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  ingressClassName: nginx 
   tls:
     - hosts:
         - clients.api.deltacapita.com
@@ -130,7 +131,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: your-email@example.com
+    email: gauravkaushal1996@gmail.com
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:

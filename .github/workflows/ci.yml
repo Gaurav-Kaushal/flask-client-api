@@ -59,40 +59,39 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/flask-clients-api:latest
 
-          deploy:
-            needs: docker-build
-            runs-on: ubuntu-latest
-        
-            steps:
-              - name: Checkout repository
-                uses: actions/checkout@v3
-        
-              - name: Set up Kubectl
-                uses: kubernetes-tools/setup-kubectl@v3
-                with:
-                  version: v1.32.0
-        
-              - name: Configure AWS CLI
-                run: |
-                  aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws configure set region us-east-1
-        
-              - name: Authenticate with EKS
-                run: |
-                  aws eks update-kubeconfig --name flask-api-cluster --region us-east-1
-                  kubectl config current-context
-        
-              - name: Get changed files
-                id: changed-files
-                uses: tj-actions/changed-files@v35
-        
-              - name: Deploy only modified manifests
-                run: |
-                  for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-                    if [[ $file == k8s/* ]]; then
-                      echo "Applying $file"
-                      kubectl apply --validate=false -f $file
-                    fi
-                  done
-        
+  deploy:
+    needs: docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: v1.32.0
+
+      - name: Configure AWS CLI
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region us-east-1
+
+      - name: Authenticate with EKS
+        run: |
+          aws eks update-kubeconfig --name flask-api-cluster --region us-east-1
+          kubectl config current-context
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+
+      - name: Deploy only modified manifests
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            if [[ $file == k8s/* ]]; then
+              echo "Applying $file"
+              kubectl apply --validate=false -f $file
+            fi
+          done

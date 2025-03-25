@@ -80,7 +80,7 @@ jobs:
         
               - name: Authenticate with EKS
                 run: |
-                  aws eks update-kubeconfig --name YOUR_EKS_CLUSTER_NAME --region us-east-1
+                  aws eks update-kubeconfig --name flask-api-cluster --region us-east-1
                   kubectl config current-context
         
               - name: Get changed files

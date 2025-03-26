@@ -203,6 +203,19 @@ kubectl apply -f k8s/
 For future updates, CI/CD will apply changes automatically.
 
 ---
+## Update DuckDNS IP Manually
+Since we are using DuckDNS, the public IP of the Load Balancer must be manually updated.
+
+Find the Load Balancer IP:
+```sh
+nslookup <load-balancer-hostname>
+```
+
+Use the output IP to update DuckDNS:
+```sh
+echo "<IP_ADDRESS>" > ~/.duckdns/gkeks.duckdns.org
+```
+
 ## Troubleshooting
 
 ### MongoDB connection error
@@ -236,8 +249,37 @@ kubectl rollout restart deployment metrics-server -n kube-system
 - The original domain `clients.api.deltacapita.com` has been replaced with `gkeks.duckdns.org`.
 - Certificate has been issued successfully using Let's Encrypt.
 - The project is deployed with **Kubernetes LoadBalancer, Ingress Controller, TLS Certificates, and HPA**.
+---
+## References and Official Documentation Resources
+1. **Kubernetes & Docker**
+   - Official Docs: https://kubernetes.io/docs/
+   - kubectl Reference: https://kubernetes.io/docs/reference/kubectl/
+   - Docker Reference: https://docs.docker.com/
 
+2. **Ingress and Certificate Manager**
+   - NGINX Ingress Controller: https://kubernetes.github.io/ingress-nginx/
+   - Cert-Manager: https://cert-manager.io/docs/
 
+3. **Horizontal Pod Autoscaler (HPA)**
+   - HPA Documentation: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+4. **Metrics Server**
+   - Metrics Server Setup: https://github.com/kubernetes-sigs/metrics-server
+
+5. **CI/CD and GitHub Actions**
+   - GitHub Actions for Kubernetes: https://github.com/marketplace/actions/deploy-to-kubernetes-cluster
+
+6. **Load Testing with k6**
+   - k6 Documentation: https://grafana.com/docs/k6/latest/
+
+7. **Flask**
+   - Flask Documentation: https://flask.palletsprojects.com/en/stable/
+
+8. **MongoDB Docs**
+   - Official Documentation: https://www.mongodb.com/docs/
+
+9. **DuckDNS**
+   - Official Site: https://www.duckdns.org/
 ---
 ##  **Author:** Gaurav Kaushal
  **Date:** 25th March 2025

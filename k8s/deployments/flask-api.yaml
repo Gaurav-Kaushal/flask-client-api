@@ -25,6 +25,13 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: uri
+          resources:
+            requests:
+              cpu: "100m"  #0.1 CPU
+              memory: "128Mi"  #128 MB RAM
+            limits:
+              cpu: "500m"  #0.5 CPU
+              memory: "512Mi"  #512 MB RAM
           readinessProbe:
             httpGet:
               path: /health
